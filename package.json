@@ -1,0 +1,10 @@
+{
+  "name": "chord-hands",
+  "version": "1.0.0",
+  "description": "Webcam hand-gesture chord instrument — MediaPipe hands + Web Audio in the browser.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test"
+  }
+}

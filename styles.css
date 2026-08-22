@@ -1,0 +1,204 @@
+:root{
+  --bg:#04070a;
+  --line:rgba(0,229,255,.22);
+  --line-hot:rgba(0,229,255,.55);
+  --cy:#00e5ff;
+  --am:#ffb340;
+  --dim:#5b7385;
+  --txt:#cfe9f2;
+  /* U+266D / U+266F (the flat and sharp signs) fall outside both webfonts' latin
+     subsets, so a symbol face sits second in every stack to catch them. */
+  --sym:"Segoe UI Symbol","Apple Symbols","Noto Music";
+  --ui:"Inter Tight",var(--sym),system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --display:"Montserrat",var(--sym),"Inter Tight",system-ui,sans-serif;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--txt);
+  font-family:var(--ui);
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+
+/* Faint grid, above the camera but below the scrims and every readout.
+   .stage is position:fixed with z-index:auto, so it raises no stacking
+   context and these z-indexes all compare in the root. */
+body::before{
+  content:"";
+  position:fixed; inset:0; pointer-events:none; z-index:1;
+  background-image:
+    linear-gradient(rgba(0,229,255,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,229,255,.045) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:radial-gradient(circle at 50% 45%,#000 30%,transparent 82%);
+}
+
+/* ---------- the camera is the page ---------- */
+.stage{
+  position:fixed; inset:0;
+  background:#000;
+  overflow:hidden;
+}
+#video,#overlay{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  transform:scaleX(-1);          /* mirror: you play to your reflection */
+}
+#video{opacity:.62; filter:contrast(1.05) saturate(.7)}
+
+/* Scrims. The HUD used to sit on solid panels; over live video it needs its
+   own darkness or the chord name washes out against a bright room. */
+.stage::before,.stage::after{
+  content:""; position:absolute; left:0; right:0;
+  pointer-events:none; z-index:2;
+}
+.stage::before{top:0;    height:170px; background:linear-gradient(180deg,rgba(4,7,10,.85),transparent)}
+.stage::after {bottom:0; height:320px; background:linear-gradient(0deg,rgba(4,7,10,.92),rgba(4,7,10,.55) 40%,transparent)}
+
+/* corner brackets */
+.corners i{
+  position:absolute; width:26px; height:26px; z-index:3;
+  border:1px solid var(--line-hot); pointer-events:none;
+}
+.corners i:nth-child(1){top:16px;left:16px;border-right:0;border-bottom:0}
+.corners i:nth-child(2){top:16px;right:16px;border-left:0;border-bottom:0}
+.corners i:nth-child(3){bottom:16px;left:16px;border-right:0;border-top:0}
+.corners i:nth-child(4){bottom:16px;right:16px;border-left:0;border-top:0}
+
+/* ---------- top bar ---------- */
+.bar{
+  position:absolute; top:0; left:0; right:0; z-index:3;
+  display:flex; align-items:center; gap:16px;
+  padding:20px 56px;
+  font-size:12px; font-weight:500; letter-spacing:.16em;
+}
+.logo{font-family:var(--display); font-weight:600; color:var(--cy); text-shadow:0 0 12px rgba(0,229,255,.6)}
+.logo b{color:var(--txt); font-weight:400}
+.tag{color:var(--dim); flex:1}
+.fps{color:var(--am); font-variant-numeric:tabular-nums}
+
+/* ---------- the chord itself, centred at the bottom ---------- */
+.chordplate{
+  position:absolute; z-index:3;
+  left:50%; bottom:58px; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  text-align:center; pointer-events:none;
+  max-width:min(90vw,900px);
+}
+.chord{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(52px,8.5vw,104px); line-height:1; letter-spacing:.01em;
+  color:var(--am);
+  text-shadow:0 0 44px rgba(255,179,64,.5),0 2px 30px rgba(0,0,0,.9);
+  transition:color .12s;
+}
+.chord.silent{color:var(--dim); text-shadow:none}
+.chord.flash{animation:hit .42s ease-out}
+@keyframes hit{
+  0%{color:var(--cy); text-shadow:0 0 60px rgba(0,229,255,.9)}
+  100%{color:var(--am); text-shadow:0 0 44px rgba(255,179,64,.5),0 2px 30px rgba(0,0,0,.9)}
+}
+.chordnotes{
+  font-size:14px; font-weight:500; letter-spacing:.34em; text-indent:.34em;
+  color:var(--txt); opacity:.8;
+  text-shadow:0 2px 14px rgba(0,0,0,.9);
+}
+
+/* ---------- volume meter, right edge ---------- */
+.meter{
+  position:absolute; z-index:3;
+  right:56px; top:24%; bottom:24%;
+  width:8px;
+  border:1px solid var(--line);
+  background:rgba(0,0,0,.45);
+}
+.meter-fill{
+  position:absolute; left:0; right:0; bottom:0; height:70%;
+  background:linear-gradient(180deg,var(--cy),rgba(0,229,255,.25));
+  box-shadow:0 0 14px rgba(0,229,255,.8);
+  transition:height .08s linear;
+}
+.meter-mark{
+  position:absolute; left:-6px; right:-6px; height:1px;
+  background:var(--line-hot);
+}
+.meter-mark span{
+  position:absolute; right:16px; top:-6px;
+  font-size:9px; font-weight:500; letter-spacing:.14em; color:var(--dim); white-space:nowrap;
+}
+.meter-label{
+  position:absolute; left:50%; bottom:-26px; transform:translateX(-50%);
+  font-size:11px; font-weight:500; color:var(--cy); font-variant-numeric:tabular-nums;
+  text-shadow:0 2px 12px rgba(0,0,0,.9);
+}
+
+/* ---------- controls, bottom left ---------- */
+.controls{
+  position:absolute; z-index:3;
+  left:56px; bottom:52px;
+  display:flex; flex-direction:column; align-items:flex-start; gap:11px;
+  opacity:.4; transition:opacity .2s;
+}
+.controls:hover,.controls:focus-within{opacity:1}
+.assign{
+  font-size:10px; font-weight:500; letter-spacing:.18em; color:var(--dim);
+  text-shadow:0 2px 12px rgba(0,0,0,.9);
+}
+.btns{display:flex; gap:8px}
+.patches{display:flex; gap:6px; flex-wrap:wrap}
+
+/* ---------- boot overlay ---------- */
+.boot{
+  position:absolute; inset:0; z-index:5;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+  background:rgba(4,7,10,.86);
+  backdrop-filter:blur(2px);
+}
+.boot.hidden{display:none}
+.status{
+  margin:0; font-family:var(--display); font-weight:600;
+  font-size:13px; letter-spacing:.22em; color:var(--cy);
+  text-shadow:0 0 14px rgba(0,229,255,.5);
+}
+.status.err{color:#ff5c6c;text-shadow:0 0 14px rgba(255,92,108,.5)}
+.hint{margin:0;font-size:11px;letter-spacing:.1em;color:var(--dim);max-width:44ch;text-align:center;line-height:1.8}
+
+button{
+  font-family:var(--ui); font-size:12px; font-weight:500; letter-spacing:.24em;
+  color:var(--cy); background:transparent;
+  border:1px solid var(--line-hot);
+  padding:12px 30px; cursor:pointer;
+  transition:background .15s,box-shadow .15s,color .15s;
+}
+button:hover{background:rgba(0,229,255,.1); box-shadow:0 0 22px rgba(0,229,255,.35)}
+button:disabled{opacity:.35;cursor:default;box-shadow:none;background:transparent}
+.ghost{
+  padding:7px 15px; font-size:10px; font-weight:500; letter-spacing:.18em;
+  color:var(--dim); border-color:var(--line);
+  background:rgba(4,7,10,.55); backdrop-filter:blur(3px);
+}
+.ghost:hover{color:var(--cy)}
+
+/* the sound picker — same language as .ghost, tighter, with a lit state */
+.chip{padding:6px 11px; font-size:9px; letter-spacing:.16em}
+.chip.on{
+  color:var(--cy); border-color:var(--line-hot);
+  background:rgba(0,229,255,.12); box-shadow:0 0 14px rgba(0,229,255,.2);
+}
+
+@media (max-width:820px){
+  .bar{padding:18px 26px}
+  .tag{display:none}
+  .meter{right:26px; top:20%; bottom:26%}
+  /* stacked, so the chord clears the controls instead of sitting beside them */
+  .chordplate{bottom:112px}
+  .controls{left:50%; transform:translateX(-50%); align-items:center; bottom:34px; opacity:.75}
+  /* six chips will not fit one phone-width row; wrap them centred */
+  .patches{justify-content:center; max-width:min(92vw,340px)}
+}

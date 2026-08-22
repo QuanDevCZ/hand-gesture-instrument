@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CHORD HANDS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- The camera is the whole page; every readout is an overlay on top of it. -->
+<div class="stage" id="stage">
+  <video id="video" playsinline muted></video>
+  <canvas id="overlay"></canvas>
+
+  <div class="corners"><i></i><i></i><i></i><i></i></div>
+
+  <header class="bar">
+    <span class="logo">CHORD<b>HANDS</b></span>
+    <span class="tag">MEDIAPIPE HANDS &middot; WEB AUDIO</span>
+    <span class="fps" id="fps">--&nbsp;FPS</span>
+  </header>
+
+  <!-- volume, driven by the right hand's height -->
+  <div class="meter">
+    <div class="meter-fill" id="volFill"></div>
+    <div class="meter-mark" style="bottom:100%"><span>LOUD</span></div>
+    <div class="meter-mark" style="bottom:20%"><span>FLOOR</span></div>
+    <div class="meter-label" id="volLabel">70%</div>
+  </div>
+
+  <!-- what you are playing, centred under the hands -->
+  <div class="chordplate">
+    <span class="chord silent" id="chordName">&mdash;</span>
+    <span class="chordnotes" id="chordNotes">make a sign</span>
+  </div>
+
+  <div class="controls">
+    <span class="assign" id="assign">CHORD: LEFT &middot; COLOUR: RIGHT</span>
+    <!-- one chip per patch, built from PATCHES by hud.buildPatchPicker -->
+    <span class="patches" id="patches"></span>
+    <span class="btns">
+      <button id="swap" class="ghost">SWAP HANDS</button>
+      <button id="flip" class="ghost">FLIP TILT</button>
+      <button id="panic" class="ghost">SILENCE</button>
+    </span>
+  </div>
+
+  <div class="boot" id="boot">
+    <p class="status" id="status">SYSTEM STANDBY</p>
+    <button id="start">INITIALIZE</button>
+    <p class="hint">One hand shapes the chord, the other colours it. Both hands
+      in frame, about an arm&rsquo;s length from the camera. Headphones help.
+      Six sounds, bottom left &mdash; or keys 1&ndash;6.</p>
+  </div>
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>
