@@ -4,6 +4,10 @@ A webcam instrument. Shape a chord with one hand, colour it with the other, and
 it plays. Runs entirely in the browser — camera in, synthesized chords out. No
 backend, no install, no dependencies.
 
+**Play it live:** https://webjohn7.github.io/hand-gesture-instrument/ — hit
+**INITIALIZE**, allow the camera, both hands in frame. Desktop browser with a
+webcam; headphones recommended.
+
 ![tech](https://img.shields.io/badge/MediaPipe-Hands-00e5ff) ![tech](https://img.shields.io/badge/Web%20Audio-6%20sounds-ffb340) ![tech](https://img.shields.io/badge/deps-0-brightgreen)
 
 ## How you play it
