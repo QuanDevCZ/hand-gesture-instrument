@@ -47,7 +47,7 @@ export const SIGN_PATTERNS = {
 /* ---------------------------------------------------------------- geometry */
 
 /* Distances are taken in pixel space so the 16:9 aspect ratio does not stretch
-   them — the same reason analysis.js in dojang-hud measures angles in pixels. */
+   them. */
 const dist = (a, b, w, h) => Math.hypot((a.x - b.x) * w, (a.y - b.y) * h);
 
 function angleAt(a, b, c, w, h){

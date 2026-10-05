@@ -125,9 +125,3 @@ re-issue the chord. Picking a sound deliberately does *not* `panic()` the way
 `SWAP HANDS` does; the chord carries across so two voices can be compared under
 one voicing. Voices also carry their own release time, since a pad's 1.2 s tail
 and 8-bit's 50 ms cut are as much the patch as its oscillators.
-
-## Sibling project
-
-`../dojang-hud/` is the same architecture applied to taekwondo kicks (MediaPipe
-Pose, `analysis.js` in place of `gestures.js`). Patterns established in one
-should usually match the other.
